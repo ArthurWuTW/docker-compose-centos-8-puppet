@@ -1,0 +1,13 @@
+version: '3'
+services:
+  puppet-master: #service name
+    build: 
+      context: image/puppet-server
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+  
+  puppet-slave1: 
+    build: 
+      context: image/puppet-agent
+    privileged: true
