@@ -6,7 +6,7 @@ services:
     privileged: true
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
-  
+    # command: bash -c "service chronyd start && service puppetserver start"
   puppet-slave1: 
     build: 
       context: image/puppet-agent
