@@ -12,4 +12,7 @@ RUN yum install -y\
 RUN rpm -Uvh https://yum.puppet.com/puppet5-release-el-8.noarch.rpm
 RUN yum install -y puppetserver
 
+# puppet configs
+COPY puppet.conf /etc/puppetlabs/puppet/
+
 CMD ["/usr/sbin/init"]

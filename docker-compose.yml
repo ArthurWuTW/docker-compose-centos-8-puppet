@@ -3,10 +3,12 @@ services:
   puppet-master: #service name
     build: 
       context: image/puppet-server
+    hostname: PeppetServer
     privileged: true
+    # extra_hosts:
+    #   - "Puppet-Server:127.0.1.1"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
-    # command: bash -c "service chronyd start && service puppetserver start"
   puppet-slave1: 
     build: 
       context: image/puppet-agent
