@@ -1,7 +1,6 @@
 FROM centos:8
 LABEL maintainer="lion811004@gmail.com"
 
-
 RUN yum install -y\
     ncurses \
     vim \

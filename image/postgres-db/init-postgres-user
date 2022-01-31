@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+echo "======> create database, create default user: guest pwd:12345 "
+sudo -u postgres psql -c "create database testdb;"
+sudo -u postgres psql -c "create user guest;"
+sudo -u postgres psql -c "alter user guest with encrypted password '12345';"
+sudo -u postgres psql -c "grant all privileges on database testdb to guest;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to guest;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public to guest;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public to guest;"

@@ -25,5 +25,5 @@ services:
     build:
       context: image/postgres-db
     privileged: true
-  
-# puppet db, puppet board
+    ports:
+      - "${HOST_PORT_DB}:5432"
