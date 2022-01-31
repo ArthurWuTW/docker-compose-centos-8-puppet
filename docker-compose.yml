@@ -3,18 +3,38 @@ services:
   puppet-master: #service name
     build: 
       context: image/puppet-server
-    hostname: PeppetServer
+    hostname: puppetServer.example.com
     privileged: true
     extra_hosts:
-      - "Puppet-Server:127.0.0.1"
+      - "puppetServer.example.com:127.0.0.1"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
       - ${HOME_DIR}/Desktop:/dlata/mount_desktop
+    ports:
+      - 8140:8140
   
   puppet-db:
     build:
       context: image/puppet-db
     privileged: true
+    environment:
+      - PUPPERWARE_ANALYTICS_ENABLED=${PUPPERWARE_ANALYTICS_ENABLED:-false}
+      - CERTNAME=puppetdb
+      - DNS_ALT_NAMES=${PUPPETDB_DNS_ALT_NAMES:-puppetdb}
+      - PUPPETSERVER_HOSTNAME=puppetServer.example.com
+      - PUPPETSERVER_PORT=8140
+      - PUPPETDB_POSTGRES_HOSTNAME=10.1.1.9
+      - PUPPETDB_POSTGRES_DATABASE=testdb
+      - PUPPETDB_POSTGRES_PORT=5432
+      - PUPPETDB_USER=guest
+      - PUPPETDB_PASSWORD=bbb
+    ports:
+      - 8080:8080
+      - 8081:8081
+    extra_hosts:
+      - "puppetServer.example.com:10.1.1.9"
+      - "postgresDB.example.com:10.1.1.9"
+    entrypoint: /sbin/init
   
   puppet-slave1: 
     build: 

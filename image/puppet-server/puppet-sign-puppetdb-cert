@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/opt/puppetlabs/bin/puppet cert --allow-dns-alt-names sign puppetdb

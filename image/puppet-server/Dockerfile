@@ -14,4 +14,7 @@ RUN yum install -y puppetserver
 # puppet configs
 COPY puppet.conf /etc/puppetlabs/puppet/
 
+# puppet sign pupetdb
+COPY puppet-sign-puppetdb-cert /puppet-sign-puppetdb-cert
+
 CMD ["/usr/sbin/init"]

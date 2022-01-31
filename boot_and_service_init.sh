@@ -13,3 +13,11 @@ docker-compose exec postgres-db /bin/sh -c "sudo -u postgres psql -c 'SELECT ver
 docker-compose exec postgres-db /root/init-postgres-user
 # set time zone
 docker-compose exec postgres-db /bin/sh -c "timedatectl set-timezone Asia/Taipei"
+
+# Puppet db
+docker-compose exec puppet-db /docker-entrypoint.sh
+
+# # Puppet master
+# sleep 10
+# echo "puppet master signs cert"
+# docker-compose exec puppet-master /puppet-sign-puppetdb-cert
