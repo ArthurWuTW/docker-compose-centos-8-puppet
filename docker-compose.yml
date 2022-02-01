@@ -1,18 +1,18 @@
 version: '3'
 services:
-  puppet-master: #service name
-    build: 
-      context: image/puppet-server
-    hostname: puppetServer.example.com
-    privileged: true
-    extra_hosts:
-      - "puppetServer.example.com:127.0.0.1"
-      - "puppetdb.example.com:10.1.1.9"
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
-      - ${HOME_DIR}/Desktop:/dlata/mount_desktop
-    ports:
-      - 8140:8140
+  # puppet-master: #service name
+  #   build: 
+  #     context: image/puppet-server
+  #   hostname: puppetServer.example.com
+  #   privileged: true
+  #   extra_hosts:
+  #     - "puppetServer.example.com:127.0.0.1"
+  #     - "puppetdb.example.com:10.1.1.9"
+  #   volumes:
+  #     - /sys/fs/cgroup:/sys/fs/cgroup
+  #     - ${HOME_DIR}/Desktop:/data/mount_desktop
+  #   ports:
+  #     - 8140:8140
   
   puppet-db:
     build:
@@ -23,7 +23,7 @@ services:
       - PUPPERWARE_ANALYTICS_ENABLED=false
       - CERTNAME=puppetdb.example.com
       - DNS_ALT_NAMES=false
-      - PUPPETSERVER_HOSTNAME=puppetServer.example.com
+      - PUPPETSERVER_HOSTNAME=puppetdb.example.com
       - PUPPETSERVER_PORT=8140
       - PUPPETDB_POSTGRES_HOSTNAME=10.1.1.9
       - PUPPETDB_POSTGRES_DATABASE=testdb
@@ -33,8 +33,9 @@ services:
     ports:
       - 8080:8080
       - 8081:8081
+      - 8140:8140
     extra_hosts:
-      - "puppetServer.example.com:10.1.1.9"
+      - "puppetdb.example.com:10.1.1.9"
     entrypoint: /sbin/init
   
   puppet-slave1: 

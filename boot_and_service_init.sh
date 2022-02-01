@@ -1,8 +1,8 @@
 docker-compose up --build --detach
 
-# Puppet Master
-docker-compose exec puppet-master /bin/sh -c "/opt/puppetlabs/bin/puppet resource package puppetdb-termini ensure=latest"
-docker-compose exec puppet-master /bin/sh -c "systemctl enable --now puppetserver"
+# # Puppet Master
+docker-compose exec puppet-db /bin/sh -c "/opt/puppetlabs/bin/puppet resource package puppetdb-termini ensure=latest"
+docker-compose exec puppet-db /bin/sh -c "service puppetserver start"
 
 # Postgres Db
 docker-compose exec postgres-db /bin/sh -c "postgresql-setup initdb"
@@ -15,10 +15,6 @@ docker-compose exec postgres-db /root/init-postgres-user
 # set time zone
 docker-compose exec postgres-db /bin/sh -c "timedatectl set-timezone Asia/Taipei"
 
-# Puppet db
-docker-compose exec puppet-db /docker-entrypoint.sh
-
-# # Puppet master
-# sleep 10
-# echo "puppet master signs cert"
-# docker-compose exec puppet-master /puppet-sign-puppetdb-cert
+# # Puppet db
+docker-compose exec puppet-db /bin/sh -c "/opt/puppetlabs/bin/puppetdb ssl-setup -f"
+docker-compose exec puppet-db /bin/sh -c "/opt/puppetlabs/bin/puppetdb start"
