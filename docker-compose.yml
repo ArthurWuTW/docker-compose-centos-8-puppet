@@ -1,18 +1,5 @@
 version: '3'
 services:
-  # puppet-master: #service name
-  #   build: 
-  #     context: image/puppet-server
-  #   hostname: puppetServer.example.com
-  #   privileged: true
-  #   extra_hosts:
-  #     - "puppetServer.example.com:127.0.0.1"
-  #     - "puppetdb.example.com:10.1.1.9"
-  #   volumes:
-  #     - /sys/fs/cgroup:/sys/fs/cgroup
-  #     - ${HOME_DIR}/Desktop:/data/mount_desktop
-  #   ports:
-  #     - 8140:8140
   
   puppet-db:
     build:

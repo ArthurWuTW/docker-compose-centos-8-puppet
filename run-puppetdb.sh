@@ -1,1 +1,0 @@
-docker-compose exec puppet-db /root/start-puppetdb
