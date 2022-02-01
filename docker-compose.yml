@@ -18,10 +18,11 @@ services:
     build:
       context: image/puppet-db
     privileged: true
+    hostname: puppetdb.example.com
     environment:
-      - PUPPERWARE_ANALYTICS_ENABLED=true
+      - PUPPERWARE_ANALYTICS_ENABLED=false
       - CERTNAME=puppetdb.example.com
-      - DNS_ALT_NAMES=true
+      - DNS_ALT_NAMES=false
       - PUPPETSERVER_HOSTNAME=puppetServer.example.com
       - PUPPETSERVER_PORT=8140
       - PUPPETDB_POSTGRES_HOSTNAME=10.1.1.9

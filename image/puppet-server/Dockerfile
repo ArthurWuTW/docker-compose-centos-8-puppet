@@ -15,6 +15,7 @@ RUN yum install -y puppetserver
 COPY puppet.conf /etc/puppetlabs/puppet/puppet.conf
 COPY autosign.conf /etc/puppetlabs/puppet/autosign.conf
 COPY puppetdb.conf /etc/puppetlabs/puppet/puppetdb.conf
+COPY routes.yaml /etc/puppetlabs/puppet/routes.yaml
 COPY ca.conf /etc/puppetlabs/puppetserver/conf.d/ca.conf
 
 

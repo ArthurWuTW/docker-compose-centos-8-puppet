@@ -1,6 +1,7 @@
 docker-compose up --build --detach
 
 # Puppet Master
+docker-compose exec puppet-master /bin/sh -c "/opt/puppetlabs/bin/puppet resource package puppetdb-termini ensure=latest"
 docker-compose exec puppet-master /bin/sh -c "systemctl enable --now puppetserver"
 
 # Postgres Db
