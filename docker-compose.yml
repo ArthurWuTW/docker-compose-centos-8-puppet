@@ -33,13 +33,14 @@ services:
       - 8081:8081
     extra_hosts:
       - "puppetServer.example.com:10.1.1.9"
-      - "postgresDB.example.com:10.1.1.9"
     entrypoint: /sbin/init
   
   puppet-slave1: 
     build: 
       context: image/puppet-agent
     privileged: true
+    extra_hosts:
+      - "puppetServer.example.com:10.1.1.9"
 
   postgres-db:
     build:
