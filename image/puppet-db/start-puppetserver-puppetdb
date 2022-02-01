@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Puppet server
+/opt/puppetlabs/bin/puppet resource package puppetdb-termini ensure=latest
+service puppetserver start
+
+# Puppet db
+/opt/puppetlabs/bin/puppetdb ssl-setup -f
+/opt/puppetlabs/bin/puppetdb start

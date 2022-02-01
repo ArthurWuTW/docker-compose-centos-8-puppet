@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
+echo "======> set time zone "
+timedatectl set-timezone Asia/Taipei
+
+echo "======> init postgres db "
+postgresql-setup initdb
 
 echo "======> overwrite postgres config "
 sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /var/lib/pgsql/data/postgresql.conf
 sed -i '/# IPv4 local connections:/a host    all             all             0.0.0.0/0            md5' /var/lib/pgsql/data/pg_hba.conf
+
+echo "======> start postgres db "
+systemctl enable --now postgresql
+
+echo "======> self test postgres db "
+sudo -u postgres psql -c 'SELECT version();'
