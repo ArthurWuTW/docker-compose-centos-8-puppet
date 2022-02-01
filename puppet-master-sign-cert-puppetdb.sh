@@ -1,1 +1,0 @@
-docker-compose exec puppet-master /puppet-sign-puppetdb-cert

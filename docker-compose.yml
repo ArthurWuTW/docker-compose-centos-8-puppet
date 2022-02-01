@@ -7,6 +7,7 @@ services:
     privileged: true
     extra_hosts:
       - "puppetServer.example.com:127.0.0.1"
+      - "puppetdb.example.com:10.1.1.9"
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
       - ${HOME_DIR}/Desktop:/dlata/mount_desktop
@@ -18,15 +19,15 @@ services:
       context: image/puppet-db
     privileged: true
     environment:
-      - PUPPERWARE_ANALYTICS_ENABLED=${PUPPERWARE_ANALYTICS_ENABLED:-false}
-      - CERTNAME=puppetdb
-      - DNS_ALT_NAMES=${PUPPETDB_DNS_ALT_NAMES:-puppetdb}
+      - PUPPERWARE_ANALYTICS_ENABLED=true
+      - CERTNAME=puppetdb.example.com
+      - DNS_ALT_NAMES=true
       - PUPPETSERVER_HOSTNAME=puppetServer.example.com
       - PUPPETSERVER_PORT=8140
       - PUPPETDB_POSTGRES_HOSTNAME=10.1.1.9
       - PUPPETDB_POSTGRES_DATABASE=testdb
       - PUPPETDB_POSTGRES_PORT=5432
-      - PUPPETDB_USER=guest
+      - PUPPETDB_USER=puppetdb
       - PUPPETDB_PASSWORD=bbb
     ports:
       - 8080:8080

@@ -1,3 +1,2 @@
 1. ./boot_and_service_init.sh
-2. ./puppet-master-sign-cert-puppetdb.sh
-3. ./start-puppetdb.sh
+2. ./start-puppetdb.sh
