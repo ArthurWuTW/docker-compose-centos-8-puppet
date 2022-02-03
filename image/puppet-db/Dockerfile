@@ -1,7 +1,7 @@
 FROM puppet/puppetdb
 
 RUN apt-get update -y
-RUN apt-get install -y iputils-ping init wget curl
+RUN apt-get install -y iputils-ping init wget curl git python3 python3-pip
 
 
 # Install Puppet Server

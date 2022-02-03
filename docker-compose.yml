@@ -1,4 +1,9 @@
 version: '3'
+
+volumes:
+  puppetdb:
+    name: puppetdb
+
 services:
   
   puppet-db:
@@ -21,9 +26,13 @@ services:
       - ${HOST_PUPPET_DB_PORT1}:8080
       - ${HOST_PUPPET_DB_PORT2}:8081
       - ${HOST_PUPPET_MASTER_PORT}:8140
+      - 7788:7788
     extra_hosts:
       - "${PUPPET_MASTER}:${HOST_IP}"
+    volumes:
+      - puppetdb:/etc/puppetlabs/puppetdb:rw
     entrypoint: /sbin/init
+    
   
   puppet-slave1: 
     build: 
@@ -38,3 +47,21 @@ services:
     privileged: true
     ports:
       - "${HOST_PORT_DB}:5432"
+    
+  puppet-board:
+    build:
+      context: image/puppet-board
+    environment:
+      - PUPPETDB_HOST=${PUPPET_MASTER}
+      - PUPPETDB_PORT=8081
+      - PUPPETDB_SSL_VERIFY=/etc/puppetlabs/puppetdb/ssl/ca.pem
+      - PUPPETDB_KEY=/etc/puppetlabs/puppetdb/ssl/private.pem
+      - PUPPETDB_CERT=/etc/puppetlabs/puppetdb/ssl/public.pem
+    privileged: true
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}"
+      - "localhost:127.0.0.1"
+    volumes:
+      - puppetdb:/etc/puppetlabs/puppetdb:rw
+    ports:
+      - "7777:80"
