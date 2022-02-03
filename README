@@ -2,4 +2,5 @@
 2. enter puppet slave && puppet agent -t
 3. postgresql SQL -  select * from reports r ;
 4. agent -> puppet agent -t
+==== warning: if havent any puppet agent yet, puppetboard url will be 404 error
 5. <host>:7777 -> puppetboard
