@@ -6,9 +6,9 @@ volumes:
 
 services:
   
-  puppet-db:
+  puppet-master:
     build:
-      context: image/puppet-db
+      context: image/puppet-master
     privileged: true
     hostname: ${PUPPET_MASTER}
     environment:
@@ -26,20 +26,11 @@ services:
       - ${HOST_PUPPET_DB_PORT1}:8080
       - ${HOST_PUPPET_DB_PORT2}:8081
       - ${HOST_PUPPET_MASTER_PORT}:8140
-      - 7788:7788
     extra_hosts:
       - "${PUPPET_MASTER}:${HOST_IP}"
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     entrypoint: /sbin/init
-    
-  
-  puppet-slave1: 
-    build: 
-      context: image/puppet-agent
-    privileged: true
-    extra_hosts:
-      - "puppetServer.example.com:${HOST_IP}"
 
   postgres-db:
     build:
@@ -65,3 +56,29 @@ services:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     ports:
       - "7777:80"
+
+  puppet-slave1: 
+    build: 
+      context: image/puppet-agent
+    hostname: agent1.example.com 
+
+  puppet-slave2: 
+    build: 
+      context: image/puppet-agent
+    hostname: agent2.example.com 
+
+  puppet-slave3:
+    build: 
+      context: image/puppet-agent
+    hostname: agent3.example.com 
+
+  puppet-slave4: 
+    build: 
+      context: image/puppet-agent
+    hostname: agent4.example.com 
+
+  puppet-slave5: 
+    build: 
+      context: image/puppet-agent
+    hostname: agent5.example.com 
+  

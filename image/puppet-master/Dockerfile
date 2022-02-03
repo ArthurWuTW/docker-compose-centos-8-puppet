@@ -1,4 +1,5 @@
 FROM puppet/puppetdb
+# https://github.com/puppetlabs/puppetdb/blob/6.x/docker/puppetdb/Dockerfile
 
 RUN apt-get update -y
 RUN apt-get install -y iputils-ping init wget curl git python3 python3-pip
