@@ -1,48 +1,45 @@
 version: '3'
+
+volumes:
+  puppetdb:
+    name: puppetdb
+
 services:
-  puppet-master: #service name
-    build: 
-      context: image/puppet-server
-    hostname: puppetServer.example.com
-    privileged: true
-    extra_hosts:
-      - "puppetServer.example.com:127.0.0.1"
-      - "puppetdb.example.com:10.1.1.9"
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
-      - ${HOME_DIR}/Desktop:/dlata/mount_desktop
-    ports:
-      - 8140:8140
   
   puppet-db:
     build:
       context: image/puppet-db
     privileged: true
-    hostname: puppetdb.example.com
+    hostname: ${PUPPET_MASTER}
     environment:
-      - PUPPERWARE_ANALYTICS_ENABLED=false
-      - CERTNAME=puppetdb.example.com
-      - DNS_ALT_NAMES=false
-      - PUPPETSERVER_HOSTNAME=puppetServer.example.com
-      - PUPPETSERVER_PORT=8140
-      - PUPPETDB_POSTGRES_HOSTNAME=10.1.1.9
+      # - PUPPERWARE_ANALYTICS_ENABLED=false
+      # - CERTNAME=${PUPPET_MASTER}
+      # - DNS_ALT_NAMES=false
+      # - PUPPETSERVER_HOSTNAME=${PUPPET_MASTER}
+      # - PUPPETSERVER_PORT=8140
+      - PUPPETDB_POSTGRES_HOSTNAME=${HOST_IP}
       - PUPPETDB_POSTGRES_DATABASE=testdb
       - PUPPETDB_POSTGRES_PORT=5432
       - PUPPETDB_USER=puppetdb
       - PUPPETDB_PASSWORD=bbb
     ports:
-      - 8080:8080
-      - 8081:8081
+      - ${HOST_PUPPET_DB_PORT1}:8080
+      - ${HOST_PUPPET_DB_PORT2}:8081
+      - ${HOST_PUPPET_MASTER_PORT}:8140
+      - 7788:7788
     extra_hosts:
-      - "puppetServer.example.com:10.1.1.9"
+      - "${PUPPET_MASTER}:${HOST_IP}"
+    volumes:
+      - puppetdb:/etc/puppetlabs/puppetdb:rw
     entrypoint: /sbin/init
+    
   
   puppet-slave1: 
     build: 
       context: image/puppet-agent
     privileged: true
     extra_hosts:
-      - "puppetServer.example.com:10.1.1.9"
+      - "puppetServer.example.com:${HOST_IP}"
 
   postgres-db:
     build:
@@ -50,3 +47,21 @@ services:
     privileged: true
     ports:
       - "${HOST_PORT_DB}:5432"
+    
+  puppet-board:
+    build:
+      context: image/puppet-board
+    environment:
+      - PUPPETDB_HOST=${PUPPET_MASTER}
+      - PUPPETDB_PORT=8081
+      - PUPPETDB_SSL_VERIFY=/etc/puppetlabs/puppetdb/ssl/ca.pem
+      - PUPPETDB_KEY=/etc/puppetlabs/puppetdb/ssl/private.pem
+      - PUPPETDB_CERT=/etc/puppetlabs/puppetdb/ssl/public.pem
+    privileged: true
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}"
+      - "localhost:127.0.0.1"
+    volumes:
+      - puppetdb:/etc/puppetlabs/puppetdb:rw
+    ports:
+      - "7777:80"
