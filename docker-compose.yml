@@ -59,26 +59,38 @@ services:
 
   puppet-slave1: 
     build: 
-      context: image/puppet-agent
+      context: image/puppet-agent-centos
     hostname: agent1.example.com 
 
   puppet-slave2: 
     build: 
-      context: image/puppet-agent
+      context: image/puppet-agent-centos
     hostname: agent2.example.com 
 
   puppet-slave3:
     build: 
-      context: image/puppet-agent
+      context: image/puppet-agent-ubuntu
     hostname: agent3.example.com 
 
   puppet-slave4: 
     build: 
-      context: image/puppet-agent
+      context: image/puppet-agent-ubuntu
     hostname: agent4.example.com 
 
   puppet-slave5: 
     build: 
-      context: image/puppet-agent
+      context: image/puppet-agent-ubuntu
     hostname: agent5.example.com 
+  puppet-slave6: 
+    build: 
+      context: image/puppet-agent-ubuntu
+    hostname: agent6.example.com 
+  puppet-slave7: 
+    build: 
+      context: image/puppet-agent-ubuntu
+    hostname: agent7.example.com 
+  puppet-slave8: 
+    build: 
+      context: image/puppet-agent-ubuntu
+    hostname: agent8.example.com 
   

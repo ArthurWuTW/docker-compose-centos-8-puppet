@@ -1,13 +1,14 @@
 FROM puppet/puppetdb
 # https://github.com/puppetlabs/puppetdb/blob/6.x/docker/puppetdb/Dockerfile
+# puppet/puppetdb install puppet7
 
 RUN apt-get update -y
-RUN apt-get install -y iputils-ping init wget curl git python3 python3-pip
+RUN apt-get install -y iputils-ping init wget curl git
 
 
 # Install Puppet Server
-RUN curl -O https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb
-RUN dpkg -i puppetlabs-release-pc1-xenial.deb
+RUN wget https://apt.puppetlabs.com/puppet7-release-focal.deb
+RUN dpkg -i puppet7-release-focal.deb
 RUN apt-get update -y
 RUN apt-get install -y puppetserver
 
