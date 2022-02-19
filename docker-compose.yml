@@ -1,5 +1,14 @@
 version: '3'
 
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.5.254
+
 volumes:
   puppetdb:
     name: puppetdb
@@ -17,17 +26,18 @@ services:
       # - DNS_ALT_NAMES=false
       # - PUPPETSERVER_HOSTNAME=${PUPPET_MASTER}
       # - PUPPETSERVER_PORT=8140
-      - PUPPETDB_POSTGRES_HOSTNAME=${HOST_IP}
+      - PUPPETDB_POSTGRES_HOSTNAME=172.28.1.6
       - PUPPETDB_POSTGRES_DATABASE=testdb
       - PUPPETDB_POSTGRES_PORT=5432
       - PUPPETDB_USER=puppetdb
       - PUPPETDB_PASSWORD=bbb
     ports:
-      - ${HOST_PUPPET_DB_PORT1}:8080
-      - ${HOST_PUPPET_DB_PORT2}:8081
       - ${HOST_PUPPET_MASTER_PORT}:8140
     extra_hosts:
       - "${PUPPET_MASTER}:${HOST_IP}"
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.5
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     entrypoint: /sbin/init
@@ -36,8 +46,9 @@ services:
     build:
       context: image/postgres-db
     privileged: true
-    ports:
-      - "${HOST_PORT_DB}:5432"
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.6
     
   puppet-board:
     build:
@@ -50,8 +61,11 @@ services:
       - PUPPETDB_CERT=/etc/puppetlabs/puppetdb/ssl/public.pem
     privileged: true
     extra_hosts:
-      - "${PUPPET_MASTER}:${HOST_IP}"
+      - "${PUPPET_MASTER}:172.28.1.5"
       - "localhost:127.0.0.1"
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.7
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     ports:
@@ -60,37 +74,53 @@ services:
   puppet-slave1: 
     build: 
       context: image/puppet-agent-centos
-    hostname: agent1.example.com 
+    hostname: agent1.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
 
   puppet-slave2: 
     build: 
       context: image/puppet-agent-centos
-    hostname: agent2.example.com 
+    hostname: agent2.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
 
   puppet-slave3:
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent3.example.com 
+    hostname: agent3.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
 
   puppet-slave4: 
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent4.example.com 
+    hostname: agent4.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
 
   puppet-slave5: 
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent5.example.com 
+    hostname: agent5.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
   puppet-slave6: 
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent6.example.com 
+    hostname: agent6.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
   puppet-slave7: 
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent7.example.com 
+    hostname: agent7.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
   puppet-slave8: 
     build: 
       context: image/puppet-agent-ubuntu
-    hostname: agent8.example.com 
+    hostname: agent8.example.com
+    extra_hosts:
+      - "${PUPPET_MASTER}:${HOST_IP}" 
   

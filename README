@@ -4,3 +4,7 @@
 4. agent -> puppet agent -t
 ==== warning: if havent any puppet agent yet, puppetboard url will be 404 error
 5. <host>:7777 -> puppetboard
+
+
+
+https://www.adminsub.net/ipv4-subnet-calculator/10.5.0.0/8
