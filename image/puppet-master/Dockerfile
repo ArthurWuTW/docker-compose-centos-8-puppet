@@ -7,9 +7,9 @@ RUN apt-get install -y iputils-ping init wget curl git
 
 
 # Install Puppet Server
-RUN wget https://apt.puppetlabs.com/puppet7-release-focal.deb
-RUN dpkg -i puppet7-release-focal.deb
-RUN apt-get update -y
+#RUN wget https://apt.puppetlabs.com/puppet7-release-focal.deb
+#RUN dpkg -i puppet7-release-focal.deb
+#RUN apt-get update -y
 RUN apt-get install -y puppetserver
 
 
