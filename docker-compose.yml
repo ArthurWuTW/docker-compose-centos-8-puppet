@@ -35,6 +35,7 @@ services:
       - ${HOST_PUPPET_MASTER_PORT}:8140
     extra_hosts:
       - "${PUPPET_MASTER}:${HOST_IP}"
+      - "puppet:127.0.0.1"
     networks:
       vpcbr:
         ipv4_address: 172.28.1.5
