@@ -12,6 +12,7 @@ docker-compose exec puppet-master /root/start-puppetserver-puppetdb
 
 sleep 10
 docker-compose exec puppet-master /bin/sh -c "/opt/puppetlabs/bin/puppet module install puppetlabs-stdlib"
+docker-compose exec puppet-master /bin/sh -c "/opt/puppetlabs/bin/puppet module install dalen-puppetdbquery"
 
 # Slave
 docker-compose exec puppet-slave1 /bin/sh -c "/opt/puppetlabs/bin/puppet agent -t"
