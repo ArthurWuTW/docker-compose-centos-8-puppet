@@ -1,1 +1,1 @@
-FROM ghcr.io/voxpupuli/puppetboard:3.4.0rc2
+FROM ghcr.io/voxpupuli/puppetboard:5.4.0
