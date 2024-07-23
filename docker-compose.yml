@@ -1,4 +1,13 @@
-version: '2'
+version: '3.9'
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.5.254
 
 
 volumes:
@@ -10,6 +19,9 @@ services:
       context: image/puppet-server
     hostname: puppet
     container_name: puppet
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.5
     #environment:
     #  - PUPPETSERVER_HOSTNAME=192.168.122.169
     ports:
@@ -22,7 +34,7 @@ services:
     environment:
       - PUPPERWARE_ANALYTICS_ENABLED=false
       - CERTNAME=puppetdb
-      - DNS_ALT_NAMES=false
+      #- DNS_ALT_NAMES=puppetdb-aa
       - PUPPETSERVER_HOSTNAME=puppet
       - PUPPETSERVER_PORT=8140
       - PUPPETDB_POSTGRES_HOSTNAME=puppet-postgres
@@ -31,6 +43,9 @@ services:
       - PUPPETDB_DATABASE_CONNECTION=//puppet-postgres:5432/puppetdb
     depends_on:
       - puppet
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.6
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     entrypoint: /sbin/init
@@ -39,25 +54,47 @@ services:
     image: postgres:9.6
     hostname: puppet-postgres
     container_name: puppet-postgres
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.7
     environment:
       - POSTGRES_PASSWORD=puppetdb
       - POSTGRES_USER=puppetdb
 
   puppetboard:
-    image: ghcr.io/voxpupuli/puppetboard:3.4.0rc2
+    image: ghcr.io/voxpupuli/puppetboard:5.4.0
+    hostname: puppetboard
     environment:
       - PUPPETDB_HOST=puppetdb
       - PUPPETDB_PORT=8081
-      - PUPPETDB_SSL_VERIFY=/etc/puppetlabs/puppetdb/ssl/ca.pem
+      #- PUPPETDB_SSL_VERIFY=/etc/puppetlabs/puppetdb/ssl/ca.pem
+      - PUPPETDB_SSL_VERIFY=False
       - PUPPETDB_KEY=/etc/puppetlabs/puppetdb/ssl/private.pem
       - PUPPETDB_CERT=/etc/puppetlabs/puppetdb/ssl/public.pem
+      # run command >> ruby -e "require 'securerandom'; puts SecureRandom.hex(32)"
+      - SECRET_KEY=3103a805942d799d6745074370f72a37701574636f53848d8d9874af23cc0024
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
+    extra_hosts:
+      - "puppetdb-aa:172.28.1.6"
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.8
     ports:
       - "7777:80"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 10
+        window: 30s
 
   puppet-slave1:
     build:
       context: image/puppet-agent-ubuntu
     hostname: agent1.example.com
-
+    networks:
+      vpcbr:
+        ipv4_address: 172.28.1.20
+    extra_hosts:
+      - "puppet:172.28.1.5"
