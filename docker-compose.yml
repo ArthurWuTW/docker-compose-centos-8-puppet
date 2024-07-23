@@ -1,73 +1,56 @@
-version: '3'
+version: '2'
 
-networks:
-  vpcbr:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.28.0.0/16
-          gateway: 172.28.5.254
 
 volumes:
   puppetdb:
-    name: puppetdb
 
 services:
-
-  puppet-master:
+  puppet:
     build:
-      context: image/puppet-master
-    privileged: true
-    hostname: ${PUPPET_MASTER}
-    environment:
-      # - PUPPERWARE_ANALYTICS_ENABLED=false
-      # - CERTNAME=${PUPPET_MASTER}
-      # - DNS_ALT_NAMES=false
-      # - PUPPETSERVER_HOSTNAME=${PUPPET_MASTER}
-      # - PUPPETSERVER_PORT=8140
-      - PUPPETDB_POSTGRES_HOSTNAME=172.28.1.6
-      - PUPPETDB_POSTGRES_DATABASE=testdb
-      - PUPPETDB_POSTGRES_PORT=5432
-      - PUPPETDB_USER=puppetdb
-      - PUPPETDB_PASSWORD=bbb
+      context: image/puppet-server
+    hostname: puppet
+    container_name: puppet
+    #environment:
+    #  - PUPPETSERVER_HOSTNAME=192.168.122.169
     ports:
-      - ${HOST_PUPPET_MASTER_PORT}:8140
-    extra_hosts:
-      - "${PUPPET_MASTER}:${HOST_IP}"
-      - "puppet:127.0.0.1"
-    networks:
-      vpcbr:
-        ipv4_address: 172.28.1.5
+      - 8140:8140
+
+  puppetdb:
+    image: puppet/puppetdb:5.2.4
+    hostname: puppetdb
+    container_name: puppetdb
+    environment:
+      - PUPPERWARE_ANALYTICS_ENABLED=false
+      - CERTNAME=puppetdb
+      - DNS_ALT_NAMES=false
+      - PUPPETSERVER_HOSTNAME=puppet
+      - PUPPETSERVER_PORT=8140
+      - PUPPETDB_POSTGRES_HOSTNAME=puppet-postgres
+      - PUPPETDB_USER=puppetdb
+      - PUPPETDB_PASSWORD=puppetdb
+      - PUPPETDB_DATABASE_CONNECTION=//puppet-postgres:5432/puppetdb
+    depends_on:
+      - puppet
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
-      - /home/arthur/Desktop/k8s-puppet-code:/etc/puppetlabs/code:rw
     entrypoint: /sbin/init
 
-  postgres-db:
-    build:
-      context: image/postgres-db
-    privileged: true
-    networks:
-      vpcbr:
-        ipv4_address: 172.28.1.6
-
-  puppet-board:
-    build:
-      context: image/puppet-board
+  puppet-postgres:
+    image: postgres:9.6
+    hostname: puppet-postgres
+    container_name: puppet-postgres
     environment:
-      - PUPPETDB_HOST=${PUPPET_MASTER}
+      - POSTGRES_PASSWORD=puppetdb
+      - POSTGRES_USER=puppetdb
+
+  puppetboard:
+    image: ghcr.io/voxpupuli/puppetboard:3.4.0rc2
+    environment:
+      - PUPPETDB_HOST=puppetdb
       - PUPPETDB_PORT=8081
       - PUPPETDB_SSL_VERIFY=/etc/puppetlabs/puppetdb/ssl/ca.pem
       - PUPPETDB_KEY=/etc/puppetlabs/puppetdb/ssl/private.pem
       - PUPPETDB_CERT=/etc/puppetlabs/puppetdb/ssl/public.pem
-    privileged: true
-    extra_hosts:
-      - "${PUPPET_MASTER}:172.28.1.5"
-      - "localhost:127.0.0.1"
-    networks:
-      vpcbr:
-        ipv4_address: 172.28.1.7
     volumes:
       - puppetdb:/etc/puppetlabs/puppetdb:rw
     ports:
@@ -75,8 +58,6 @@ services:
 
   puppet-slave1:
     build:
-      context: image/puppet-agent-centos
+      context: image/puppet-agent-ubuntu
     hostname: agent1.example.com
-    extra_hosts:
-      - "${PUPPET_MASTER}:${HOST_IP}"
 
