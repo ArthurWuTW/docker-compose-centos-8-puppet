@@ -82,12 +82,10 @@ services:
         ipv4_address: 172.28.1.8
     ports:
       - "7777:80"
-    deploy:
+    deploy: # first start will failed since puppetdb not run yet
       restart_policy:
         condition: on-failure
-        delay: 30s
         max_attempts: 10
-        window: 30s
 
   puppet-slave1:
     build:
